@@ -24,58 +24,52 @@ namespace Chat_bot_multicast
     {
         stringVM MainTextStr = new stringVM();
         int multicastPort = 8080;
-        string name = "Danil";
+        public string name = "Danil";
+        string multiIp = "224.5.5.5";
 
+        UdpClient udpClient = new UdpClient();
         public Window_client()
         {
             InitializeComponent();
 
             tb_chat.DataContext = MainTextStr;
 
-            Thread thread = new Thread(() =>
+            Thread t1 = new Thread(async() =>
             {
+                IPAddress multicastAddress = IPAddress.Parse(multiIp);
                 while (true)
                 {
-                    try
-                    {
-                        MainTextStr.MyString += Encoding.UTF8.GetString(Listener()) + "\n";
+                    using (var udpClient = new UdpClient())
+                    {                      
+                        udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+                        udpClient.JoinMulticastGroup(multicastAddress);
+                        udpClient.Client.Bind(new IPEndPoint(IPAddress.Any, multicastPort));
+
+                        IPEndPoint remoteEndPoint = new IPEndPoint(multicastAddress, multicastPort);
+
+                        var response = await udpClient.ReceiveAsync();
+                        string responseString = Encoding.UTF8.GetString(response.Buffer);
+
+                        if (responseString.Length > 0)
+                        {
+                            MainTextStr.MyString += responseString + "\n";
+                        }
                     }
-                    catch { }
                 }
             });
-            thread.Start();
+            t1.SetApartmentState(ApartmentState.STA);
+            t1.Start();
         }
 
-        void SendMessageToServer(string message)
-        {
-            Socket soc = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-
-            IPAddress ip = IPAddress.Parse("224.5.5.5");
-            IPEndPoint ipep = new IPEndPoint(ip, 8080);
-
-            byte[] data = Encoding.UTF8.GetBytes(message);
-            soc.SendTo(data, ipep);
-
-            soc.Close();
-        }
-        byte[] Listener()
-        {
-            Socket soc = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            IPAddress ip = IPAddress.Parse("224.5.5.5");
-
-            soc.Bind(new IPEndPoint(IPAddress.Any, multicastPort));
-            soc.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(ip, IPAddress.Any));
-
-            byte[] buff = new byte[4096];
-
-            soc.Receive(buff);
-            soc.Close();
-
-            return buff;
+        async void SendMessageToServer(string message)
+        {        
+            IPAddress ip = IPAddress.Parse(multiIp);
+            byte[] requestData = Encoding.UTF8.GetBytes(message);
+            await udpClient.SendAsync(requestData, requestData.Length, new IPEndPoint(ip, multicastPort));
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (tb_send.Text.Length > 0)
+            if (tb_send.Text.Length > 0 && tb_send.Text != "Enter message here...")
             {
                 SendMessageToServer(name + ": " + tb_send.Text);
 
@@ -91,6 +85,16 @@ namespace Chat_bot_multicast
         private void tb_send_LostFocus(object sender, RoutedEventArgs e)
         {
             if (tb_send.Text == "") tb_send.Text = "Enter message here...";
+        }
+
+        private void tb_chat_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            tb_chat.ScrollToEnd();
+        }
+
+        private void tb_name_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            
         }
     }
 }

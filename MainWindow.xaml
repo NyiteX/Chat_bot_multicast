@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Chat_bot_multicast"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowStyle="None" MouseDown="Window_MouseDown">
     <Window.Resources>
         <Style x:Key="FocusVisual">
             <Setter Property="Control.Template">
@@ -46,16 +46,16 @@
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="true">
                                 <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="Red"/>
-                                
+
                             </Trigger>
                             <Trigger Property="IsPressed" Value="true">
                                 <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Pressed.Background}"/>
                                 <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Pressed.Border}"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="false">
-                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>
+                                <Setter Property="Background" TargetName="border" Value="Black"/>
                                 <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Disabled.Border}"/>
-                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
+                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="Black"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -68,15 +68,15 @@
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Button Style="{DynamicResource ButtonStyle1}" x:Name="btn_server" Content="Server" Grid.Column="0" FontSize="64" Click="btn_server_Click">
+        <!--<Button Style="{DynamicResource ButtonStyle1}" x:Name="btn_server" Content="Server" Grid.Column="0" FontSize="64" Click="btn_server_Click">
             <Button.Background>
                 <RadialGradientBrush GradientOrigin="0.5,1">
                     <GradientStop Color="Black" Offset="1"/>
                     <GradientStop Color="#FF60D800" Offset="0"/>
                 </RadialGradientBrush>
             </Button.Background>
-        </Button>
-        <Button x:Name="btn_client" Content="Client" Grid.Column="1" FontSize="64" Style="{DynamicResource ButtonStyle1}" Click="btn_client_Click">
+        </Button>-->
+        <Button x:Name="btn_client" Content="Touch me" Grid.Column="1" FontSize="64" Style="{DynamicResource ButtonStyle1}" Click="btn_client_Click" Foreground="#FF960000">
             <Button.Background>
                 <RadialGradientBrush GradientOrigin="0.5,1">
                     <GradientStop Color="Black" Offset="1"/>
@@ -84,6 +84,70 @@
                 </RadialGradientBrush>
             </Button.Background>
         </Button>
+        <Grid>
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
+                    <GradientStop Color="#FFA537FF" Offset="0.987"/>
+                    <GradientStop Color="#FF2FC4FD"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25*"></RowDefinition>
+                <RowDefinition Height="395*"></RowDefinition>
+                <RowDefinition Height="25*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="25*"></ColumnDefinition>
+                <ColumnDefinition Width="291*"></ColumnDefinition>
+                <ColumnDefinition Width="25*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Border BorderThickness="3" Grid.Column="1" Grid.Row="1">
+                <Border.BorderBrush>
+                    <RadialGradientBrush RadiusX="1" RadiusY="1" Center="0.5,0.8">
+                        <GradientStop Color="#FF8800FF"/>
+                        <GradientStop Color="#FFD8AEFD" Offset="1"/>
+                        <GradientStop Color="#FF454FF1" Offset="0.432"/>
+                    </RadialGradientBrush>
+                </Border.BorderBrush>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="74*"></RowDefinition>
+                        <RowDefinition Height="77*"></RowDefinition>
+                        <RowDefinition Height="71*"></RowDefinition>
+                        <RowDefinition Height="74*"></RowDefinition>
+                        <RowDefinition Height="74*"></RowDefinition>
+                        <RowDefinition Height="74*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="29*"></ColumnDefinition>
+                        <ColumnDefinition Width="29*"></ColumnDefinition>
+                        <ColumnDefinition Width="15*"></ColumnDefinition>
+                        <ColumnDefinition Width="14*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" Content="Sign up" HorizontalAlignment="Center" VerticalAlignment="Center" Width="116" Height="58" FontSize="24" Foreground="White"/>
+                    <Button x:Name="BTN_Login" Content="Sign up" Grid.Column="0" Grid.RowSpan="2" Grid.Row="5" Grid.ColumnSpan="4" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" Height="41" Width="137" Foreground="#FF8F7CFE" Cursor="Hand" FontSize="24" Background="WhiteSmoke" BorderBrush="#FF9103A9" Click="BTN_Login_Click" />
+                    <TextBox x:Name="Name_TB" HorizontalAlignment="Left" Margin="67,15,0,0" Grid.Row="1" Grid.ColumnSpan="4" Text="FirstName" VerticalAlignment="Top" Width="234" Grid.Column="0" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FFF3F3F3" Height="33" FontSize="18" GotFocus="Name_TB_GotFocus" LostFocus="Name_TB_LostFocus"/>
+                    <TextBox x:Name="Login_TB" HorizontalAlignment="Left" Margin="67,15,0,0" Grid.Row="2" Grid.ColumnSpan="4"  Text="Login" VerticalAlignment="Top" Width="234" Grid.Column="0" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FFF3F3F3" Height="33" FontSize="18" GotFocus="Login_TB_GotFocus" LostFocus="Login_TB_LostFocus"/>
+                    <TextBox x:Name="Pass_TB" HorizontalAlignment="Left" Margin="67,15,0,0" Grid.Row="3" Grid.ColumnSpan="4" Text="Password" VerticalAlignment="Top" Width="234" Grid.Column="0" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FFF1F1F1" Height="33" FontSize="18" GotFocus="Pass_TB_GotFocus" LostFocus="Pass_TB_LostFocus"/>
 
+
+                    <CheckBox x:Name="login_maybe" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Margin="67,25,0,0" Grid.Row="4" Grid.ColumnSpan="3" Content="Already have account?" VerticalAlignment="Top" Width="212" Grid.Column="0" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FFD08F00" Height="33"  FontSize="16" Unchecked="login_maybe_Unchecked" Checked="login_maybe_Checked" Padding="-20,-1,0,0"/>
+                    <Line x:Name="line_name" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" X1="60" X2="1000" Y1="50" Y2="50" StrokeThickness="3" Stroke="#7FFFFFFF" Margin="0,74,0,0" Grid.RowSpan="2" />
+                    <Line Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" X1="60" X2="1000" Y1="50" Y2="50" StrokeThickness="3" Stroke="#7FFFFFFF" Margin="0,74,0,0" Grid.RowSpan="2" />
+                    <Line Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" X1="60" X2="1000" Y1="50" Y2="50" StrokeThickness="3" Stroke="#7FFFFFFF" Margin="0,74,0,0" Grid.RowSpan="2" />
+
+
+                </Grid>
+            </Border>
+
+        </Grid>
+        <Button x:Name="btn_x" Content="r" HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" FontFamily="Webdings" Width="22" FontSize="20" Click="btn_x_Click" Margin="368,10,0,0" Padding="0,0,0,0" Grid.Column="1">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF7880FF"/>
+                    <GradientStop Color="#FFB541FB" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
     </Grid>
 </Window>

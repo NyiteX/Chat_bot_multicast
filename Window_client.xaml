@@ -5,17 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Chat_bot_multicast"
         mc:Ignorable="d"
-        Title="Window_client" Height="450" Width="800">
+        Title="Window_client" Height="450" Width="800" WindowStartupLocation="CenterOwner">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="179*"></RowDefinition>
-            <RowDefinition Height="38*"></RowDefinition>
-            <RowDefinition Height="38*"></RowDefinition>
+            <RowDefinition Height="304*"></RowDefinition>
+            <RowDefinition Height="65*"></RowDefinition>
+            <RowDefinition Height="65*"></RowDefinition>
         </Grid.RowDefinitions>
-        
-        <TextBox x:Name="tb_chat" Grid.Row="0" Text="{Binding MyString}"/>
-        <TextBox x:Name="tb_send" Grid.Row="1" Text="Enter message here..." FontSize="16" GotFocus="tb_send_GotFocus" LostFocus="tb_send_LostFocus"/>
-        <Button Content="Send" Grid.Row="2" FontSize="24" Click="Button_Click"/>
+
+        <TextBox x:Name="tb_chat" Text="{Binding MyString}" IsReadOnly="True" TextChanged="tb_chat_TextChanged" Grid.Row="0"/>
+        <TextBox x:Name="tb_send" Text="Enter message here..." FontSize="16" GotFocus="tb_send_GotFocus" LostFocus="tb_send_LostFocus" Grid.Row="1"/>
+        <Button Content="Send" FontSize="24" Click="Button_Click"  Grid.Row="2"/>
 
     </Grid>
 </Window>

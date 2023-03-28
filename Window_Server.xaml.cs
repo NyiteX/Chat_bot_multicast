@@ -23,7 +23,8 @@ namespace Chat_bot_multicast
     public partial class Window_Server : Window
     {
         stringVM MainTextStr = new stringVM();
-        int Interval = 500;
+        int multicastPort = 8080;
+
         public Window_Server()
         {
             InitializeComponent();
@@ -31,61 +32,37 @@ namespace Chat_bot_multicast
             MainTextStr.MyString = "Server started.\n\n";
             tb_main.DataContext = MainTextStr;
 
-            Thread Sender = new Thread(new ThreadStart(multicastSend));
-            Sender.Start();
+            Thread t = new Thread(async() => { await udp_(); });
+            t.Start();
         }
 
-        void multicastSend()
+        async Task udp_()
         {
-            /*Console.WriteLine("Server");*/
+            IPAddress multicastAddress = IPAddress.Parse("224.5.5.5");
             while (true)
             {
-                //Thread.Sleep(Interval);
-                string message = "";
-                while(message == "")
+                using (var udpServer = new UdpClient())
                 {
-                    message = Encoding.UTF8.GetString(Listener());
+                    udpServer.JoinMulticastGroup(multicastAddress);
+                    udpServer.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+                    udpServer.Client.Bind(new IPEndPoint(IPAddress.Any, multicastPort));
+
+                    var data = await udpServer.ReceiveAsync();
+                    string request = Encoding.UTF8.GetString(data.Buffer);
+
+                    if (request.Count() > 0)
+                    {
+                        MainTextStr.MyString += request + "\n";
+                        byte[] responseData = Encoding.UTF8.GetBytes(request);
+                        await udpServer.SendAsync(responseData, responseData.Length, new IPEndPoint(multicastAddress, multicastPort));
+                    }
                 }
-                MainTextStr.MyString += message + "\n";
-
-                Socket soc = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-
-                soc.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, 2);
-
-                IPAddress dast = IPAddress.Parse("224.5.5.5");
-
-                soc.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(dast));
-
-                IPEndPoint ipep = new IPEndPoint(dast, 8080);
-
-                soc.Connect(ipep);
-                soc.Send(Encoding.UTF8.GetBytes(message));
-                soc.Close();
             }
         }
-       byte[] Listener()
+
+        private void tb_main_TextChanged(object sender, TextChangedEventArgs e)
         {
-            /*Console.WriteLine("\nClient");*/
-            /*while (true)
-            {*/
-                Socket soc = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-
-                IPEndPoint ipep = new IPEndPoint(IPAddress.Any, 8080);
-
-                soc.Bind(ipep);
-
-                IPAddress ip = IPAddress.Parse("224.5.5.5");
-
-                soc.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(ip, IPAddress.Any));
-
-                byte[] buff = new byte[4096];
-
-                soc.Receive(buff);
-                /*if (Encoding.UTF8.GetString(buff))
-                    Console.WriteLine(Encoding.UTF8.GetString(buff));*/
-                soc.Close();
-            return buff;
-            /*}*/
+            tb_main.ScrollToEnd();
         }
     }
 }
